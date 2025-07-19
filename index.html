@@ -1,0 +1,698 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wo hörst du überall...? - Interaktives Arbeitsblatt</title>
+    <style>
+        body {
+            font-family: 'Comic Sans MS', Arial, sans-serif;
+            background-color: #e3f2fd;
+            margin: 0;
+            padding: 20px;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background-color: white;
+            border-radius: 20px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            padding: 30px;
+        }
+
+        .header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 30px;
+            padding: 20px;
+            background-color: #b3e5fc;
+            border-radius: 15px;
+        }
+
+        .letter-display {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .letter-box {
+            background-color: #81d4fa;
+            padding: 20px 40px;
+            font-size: 72px;
+            font-weight: bold;
+            border-radius: 10px;
+            position: relative;
+        }
+
+        .crown {
+            position: absolute;
+            top: -30px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 40px;
+        }
+
+        .example-images {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+        }
+
+        .example-item {
+            text-align: center;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        .example-item:hover {
+            transform: scale(1.1);
+        }
+
+        .example-item img {
+            width: 80px;
+            height: 80px;
+            object-fit: contain;
+            border-radius: 10px;
+            background-color: #e1f5fe;
+            padding: 10px;
+        }
+
+        .audio-icons {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .audio-icon {
+            width: 50px;
+            height: 50px;
+            background-color: #4fc3f7;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .audio-icon:hover {
+            background-color: #29b6f6;
+            transform: scale(1.1);
+        }
+
+        .task-box {
+            background: linear-gradient(135deg, #fff3e0 0%, #ffe0b2 100%);
+            padding: 25px;
+            border-radius: 15px;
+            margin: 20px 0;
+            text-align: center;
+            font-size: 24px;
+            font-weight: bold;
+            color: #e65100;
+            border: 3px solid #ff9800;
+            box-shadow: 0 4px 10px rgba(255, 152, 0, 0.3);
+        }
+
+        .task-box .task-icon {
+            font-size: 40px;
+            margin-bottom: 10px;
+        }
+
+        .level-selector {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin: 20px 0;
+        }
+
+        .level-btn {
+            padding: 15px 30px;
+            font-size: 18px;
+            border: none;
+            border-radius: 30px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: bold;
+            background-color: #e0e0e0;
+            color: #666;
+        }
+
+        .level-btn.active {
+            background-color: #2196f3;
+            color: white;
+            transform: scale(1.1);
+        }
+
+        .level-btn:hover {
+            transform: scale(1.05);
+        }
+
+        .main-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 20px;
+            margin-top: 30px;
+            padding-top: 30px;
+            border-top: 3px dashed #b3e5fc;
+        }
+
+        .word-item {
+            text-align: center;
+            cursor: pointer;
+            padding: 10px;
+            border-radius: 10px;
+            transition: all 0.3s;
+            position: relative;
+            border: 3px solid transparent;
+        }
+
+        .word-item:hover:not(.marked) {
+            background-color: #e1f5fe;
+            transform: translateY(-5px);
+        }
+
+        .word-item img {
+            width: 80px;
+            height: 80px;
+            object-fit: contain;
+            margin-bottom: 5px;
+        }
+
+        .word-item.correct {
+            border-color: #4caf50;
+            background-color: #e8f5e9;
+            animation: correctPulse 0.6s ease-out;
+        }
+
+        .word-item.incorrect {
+            border-color: #f44336;
+            background-color: #ffebee;
+            animation: shake 0.5s ease-out;
+        }
+
+        .word-item.marked {
+            transform: scale(0.95);
+            opacity: 0.7;
+        }
+
+        @keyframes correctPulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-10px); }
+            75% { transform: translateX(10px); }
+        }
+
+        .controls {
+            margin-top: 40px;
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 15px 30px;
+            font-size: 16px;
+            border: none;
+            border-radius: 30px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+
+        .btn-primary {
+            background-color: #2196f3;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background-color: #1976d2;
+            transform: scale(1.05);
+        }
+
+        .btn-secondary {
+            background-color: #ff9800;
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background-color: #f57c00;
+            transform: scale(1.05);
+        }
+
+        .btn-success {
+            background-color: #4caf50;
+            color: white;
+        }
+
+        .btn-success:hover {
+            background-color: #388e3c;
+            transform: scale(1.05);
+        }
+
+        .score-display {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background-color: #4caf50;
+            color: white;
+            padding: 15px 25px;
+            border-radius: 25px;
+            font-weight: bold;
+            font-size: 18px;
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .score-display .star {
+            font-size: 24px;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+
+        .playing {
+            animation: pulse 0.5s ease-in-out;
+        }
+
+        .notification {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: #4caf50;
+            color: white;
+            padding: 15px 30px;
+            border-radius: 30px;
+            font-size: 18px;
+            font-weight: bold;
+            opacity: 0;
+            transition: opacity 0.3s;
+            z-index: 1000;
+        }
+
+        .notification.show {
+            opacity: 1;
+        }
+
+        .celebration {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 100px;
+            z-index: 2000;
+            animation: celebrate 1s ease-out forwards;
+        }
+
+        @keyframes celebrate {
+            0% { 
+                transform: translate(-50%, -50%) scale(0) rotate(0deg);
+                opacity: 1;
+            }
+            50% { 
+                transform: translate(-50%, -50%) scale(1.5) rotate(180deg);
+            }
+            100% { 
+                transform: translate(-50%, -50%) scale(1) rotate(360deg);
+                opacity: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="score-display">
+        <span class="star">⭐</span>
+        <span id="score">0</span> Punkte
+    </div>
+    
+    <div class="container">
+        <div class="header">
+            <div class="letter-display">
+                <div class="letter-box">
+                    <span class="crown">👑</span>
+                    Aa
+                </div>
+                <div class="example-images">
+                    <div class="example-item" onclick="playSound('affe')">
+                        <img src="affe.png" alt="Affe">
+                    </div>
+                    <div class="example-item" onclick="playSound('ameise')">
+                        <img src="ameise.png" alt="Ameise">
+                    </div>
+                </div>
+            </div>
+            <div class="audio-icons">
+                <div class="audio-icon" onclick="playInstruction('mund')">👄</div>
+                <div class="audio-icon" onclick="playInstruction('ohr')">👂</div>
+                <div class="audio-icon" onclick="playInstruction('hand')">✋</div>
+            </div>
+            <div style="font-size: 24px; color: #1976d2;">
+                Wo hörst du überall ...?<br>
+                <span style="font-size: 16px;">(Laute hören)</span>
+            </div>
+        </div>
+
+        <div class="level-selector">
+            <button class="level-btn active" onclick="setLevel(1)">Level 1</button>
+            <button class="level-btn" onclick="setLevel(2)">Level 2</button>
+            <button class="level-btn" onclick="setLevel(3)">Level 3</button>
+        </div>
+
+        <div class="task-box" id="taskBox">
+            <div class="task-icon">🎯</div>
+            <div id="taskText">Finde alle Wörter, die mit 'A' beginnen!</div>
+            <div id="remainingCount" style="font-size: 18px; color: #666; margin-top: 10px;">
+                Noch zu finden: <span style="color: #e65100; font-weight: bold;">6</span> Wörter
+            </div>
+        </div>
+
+        <div class="main-grid" id="mainGrid">
+            <!-- Zeile 1 -->
+            <div class="word-item" data-word="apfel" data-row="1">
+                <img src="apfel.png" alt="Apfel">
+            </div>
+            <div class="word-item" data-word="banane" data-row="1">
+                <img src="banane.png" alt="Banane">
+            </div>
+            <div class="word-item" data-word="lama" data-row="1">
+                <img src="lama.png" alt="Lama">
+            </div>
+            <div class="word-item" data-word="schnecke" data-row="1">
+                <img src="schnecke.png" alt="Schnecke">
+            </div>
+            <div class="word-item" data-word="ananas" data-row="1">
+                <img src="ananas.png" alt="Ananas">
+            </div>
+            <div class="word-item" data-word="fisch" data-row="1">
+                <img src="fisch.png" alt="Fisch">
+            </div>
+            <div class="word-item" data-word="oma" data-row="1">
+                <img src="oma.png" alt="Oma">
+            </div>
+            
+            <!-- Zeile 2 -->
+            <div class="word-item" data-word="arm" data-row="2">
+                <img src="arm.png" alt="Arm">
+            </div>
+            <div class="word-item" data-word="hut" data-row="2">
+                <img src="hut.png" alt="Hut">
+            </div>
+            <div class="word-item" data-word="kaktus" data-row="2">
+                <img src="kaktus.png" alt="Kaktus">
+            </div>
+            <div class="word-item" data-word="blatt" data-row="2">
+                <img src="blatt.png" alt="Blatt">
+            </div>
+            <div class="word-item" data-word="hase" data-row="2">
+                <img src="hase.png" alt="Hase">
+            </div>
+            <div class="word-item" data-word="rakete" data-row="2">
+                <img src="rakete.png" alt="Rakete">
+            </div>
+            <div class="word-item" data-word="ente" data-row="2">
+                <img src="ente.png" alt="Ente">
+            </div>
+            
+            <!-- Zeile 3 -->
+            <div class="word-item" data-word="paket" data-row="3">
+                <img src="paket.png" alt="Paket">
+            </div>
+            <div class="word-item" data-word="koala" data-row="3">
+                <img src="koala.png" alt="Koala">
+            </div>
+            <div class="word-item" data-word="lampe" data-row="3">
+                <img src="lampe.png" alt="Lampe">
+            </div>
+            <div class="word-item" data-word="glas" data-row="3">
+                <img src="glas.png" alt="Glas">
+            </div>
+            <div class="word-item" data-word="katze" data-row="3">
+                <img src="katze.png" alt="Katze">
+            </div>
+            <div class="word-item" data-word="wolke" data-row="3">
+                <img src="wolke.png" alt="Wolke">
+            </div>
+            <div class="word-item" data-word="auto" data-row="3">
+                <img src="auto.png" alt="Auto">
+            </div>
+            
+            <!-- Zeile 4 -->
+            <div class="word-item" data-word="panda" data-row="4">
+                <img src="panda.png" alt="Panda">
+            </div>
+            <div class="word-item" data-word="schirm" data-row="4">
+                <img src="schirm.png" alt="Schirm">
+            </div>
+            <div class="word-item" data-word="salat" data-row="4">
+                <img src="salat.png" alt="Salat">
+            </div>
+            <div class="word-item" data-word="ampel" data-row="4">
+                <img src="ampel.png" alt="Ampel">
+            </div>
+            <div class="word-item" data-word="schlange" data-row="4">
+                <img src="schlange.png" alt="Schlange">
+            </div>
+            <div class="word-item" data-word="roboter" data-row="4">
+                <img src="roboter.png" alt="Roboter">
+            </div>
+            <div class="word-item" data-word="anker" data-row="4">
+                <img src="anker.png" alt="Anker">
+            </div>
+        </div>
+
+        <div class="controls">
+            <button class="btn btn-primary" onclick="toggleMode()">
+                <span id="modeButtonText">Zum Übungsmodus</span>
+            </button>
+            <button class="btn btn-secondary" onclick="playAllWords()">
+                Alle Wörter anhören
+            </button>
+            <button class="btn btn-success" onclick="resetLevel()">
+                Level neu starten
+            </button>
+        </div>
+    </div>
+
+    <div class="notification" id="notification"></div>
+
+    <script>
+        let currentMode = 'listening'; // 'listening' oder 'practice'
+        let currentLevel = 1;
+        let score = 0;
+        let markedWords = new Set();
+        let correctWords = new Set();
+        let incorrectWords = new Set();
+        
+        // Audio-Player erstellen
+        const audio = new Audio();
+        
+        // Lösungen für jedes Level
+        const solutions = {
+            1: ['apfel', 'ananas', 'arm', 'auto', 'ampel', 'anker'], // Wörter mit A am Anfang
+            2: ['lama', 'oma', 'koala', 'panda'], // Wörter mit A am Ende (nur 4 Wörter!)
+            3: ['banane', 'lama', 'ananas', 'kaktus', 'blatt', 'hase', 'rakete', 'paket', 'koala', 'lampe', 'glas', 'katze', 'panda', 'salat', 'schlange'] // Wörter mit A in der Mitte (15 Wörter!)
+        };
+        
+        // Event Listener für alle Wort-Items
+        document.querySelectorAll('.word-item').forEach(item => {
+            item.addEventListener('click', function() {
+                if (currentMode === 'listening') {
+                    playSound(this.dataset.word);
+                } else if (currentMode === 'practice' && !this.classList.contains('marked')) {
+                    checkWord(this);
+                }
+            });
+        });
+        
+        function playSound(word) {
+            const wordItem = document.querySelector(`[data-word="${word}"]`);
+            if (wordItem) {
+                wordItem.classList.add('playing');
+                setTimeout(() => wordItem.classList.remove('playing'), 500);
+            }
+            
+            audio.src = `${word}.mp3`;
+            audio.play().catch(e => {
+                console.log('Audio konnte nicht abgespielt werden:', e);
+                showNotification('Audio-Datei nicht gefunden: ' + word + '.mp3', 'error');
+            });
+        }
+        
+        function playInstruction(type) {
+            const messages = {
+                'mund': 'Spreche das Wort laut aus!',
+                'ohr': 'Höre genau hin!',
+                'hand': 'Zeige auf das Bild!'
+            };
+            showNotification(messages[type]);
+        }
+        
+        function setLevel(level) {
+            // Erst Sets leeren, dann Level wechseln
+            markedWords.clear();
+            correctWords.clear();
+            incorrectWords.clear();
+            
+            currentLevel = level;
+            
+            // Alle visuellen Markierungen entfernen
+            document.querySelectorAll('.word-item').forEach(item => {
+                item.classList.remove('marked', 'correct', 'incorrect');
+            });
+            
+            // Level-Buttons aktualisieren
+            document.querySelectorAll('.level-btn').forEach(btn => btn.classList.remove('active'));
+            document.querySelectorAll('.level-btn')[level - 1].classList.add('active');
+            
+            // Aufgabentext aktualisieren
+            const taskTexts = {
+                1: "Finde alle Wörter, die mit 'A' beginnen!",
+                2: "Finde alle Wörter, die auf 'A' enden!",
+                3: "Finde alle Wörter mit 'A' in der Mitte!"
+            };
+            
+            document.getElementById('taskText').textContent = taskTexts[level];
+            updateRemainingCount();
+            showNotification(`Level ${level} aktiviert!`);
+        }
+        
+        function toggleMode() {
+            currentMode = currentMode === 'listening' ? 'practice' : 'listening';
+            const buttonText = document.getElementById('modeButtonText');
+            
+            if (currentMode === 'practice') {
+                buttonText.textContent = 'Zum Hörmodus';
+                showNotification('Übungsmodus aktiviert - Klicke auf die richtigen Wörter!');
+            } else {
+                buttonText.textContent = 'Zum Übungsmodus';
+                showNotification('Hörmodus aktiviert - Klicke auf Bilder zum Anhören!');
+                // Markierungen entfernen beim Wechsel zum Hörmodus
+                resetLevel();
+            }
+        }
+        
+        function checkWord(item) {
+            const word = item.dataset.word;
+            const isCorrect = solutions[currentLevel].includes(word);
+            
+            item.classList.add('marked');
+            markedWords.add(word);
+            
+            if (isCorrect) {
+                item.classList.add('correct');
+                correctWords.add(word);
+                score += 10;
+                updateScore();
+                updateRemainingCount();
+                showCelebration('✓');
+                
+                // Prüfen ob alle gefunden wurden
+                if (correctWords.size === solutions[currentLevel].length) {
+                    setTimeout(() => {
+                        showNotification('🎉 Super! Du hast alle Wörter gefunden!', 'success');
+                        showCelebration('🎉');
+                    }, 500);
+                }
+            } else {
+                item.classList.add('incorrect');
+                incorrectWords.add(word);
+                if (score > 0) score -= 5;
+                updateScore();
+                
+                // Nach kurzer Zeit den roten Rahmen entfernen, aber markiert lassen
+                setTimeout(() => {
+                    item.classList.remove('incorrect');
+                }, 1000);
+            }
+        }
+        
+        function updateRemainingCount() {
+            const total = solutions[currentLevel].length;
+            const found = Array.from(correctWords).filter(word => 
+                solutions[currentLevel].includes(word)
+            ).length;
+            const remaining = total - found;
+            
+            const remainingDiv = document.getElementById('remainingCount');
+            if (remaining === 0) {
+                remainingDiv.innerHTML = 
+                    '<span style="color: #4caf50; font-weight: bold;">🎉 Alle Wörter gefunden!</span>';
+            } else {
+                remainingDiv.innerHTML = 
+                    `Noch zu finden: <span style="color: #e65100; font-weight: bold;">${remaining}</span> ${remaining === 1 ? 'Wort' : 'Wörter'}`;
+            }
+        }
+        
+        function updateScore() {
+            document.getElementById('score').textContent = score;
+        }
+        
+        function showCelebration(emoji) {
+            const celebration = document.createElement('div');
+            celebration.className = 'celebration';
+            celebration.textContent = emoji;
+            document.body.appendChild(celebration);
+            
+            setTimeout(() => celebration.remove(), 1000);
+        }
+        
+        function playAllWords() {
+            const words = Array.from(document.querySelectorAll('.word-item')).map(item => item.dataset.word);
+            let index = 0;
+            
+            function playNext() {
+                if (index < words.length) {
+                    playSound(words[index]);
+                    index++;
+                    setTimeout(playNext, 1500);
+                }
+            }
+            
+            playNext();
+            showNotification('Alle Wörter werden nacheinander abgespielt...');
+        }
+        
+        function resetLevel() {
+            document.querySelectorAll('.word-item').forEach(item => {
+                item.classList.remove('marked', 'correct', 'incorrect');
+            });
+            markedWords.clear();
+            correctWords.clear();
+            incorrectWords.clear();
+            updateRemainingCount();
+            showNotification('Level wurde zurückgesetzt!');
+        }
+        
+        function showNotification(message, type = 'success') {
+            const notification = document.getElementById('notification');
+            notification.textContent = message;
+            notification.style.backgroundColor = type === 'error' ? '#f44336' : '#4caf50';
+            notification.classList.add('show');
+            
+            setTimeout(() => {
+                notification.classList.remove('show');
+            }, 3000);
+        }
+        
+        // Initiale Nachricht
+        setTimeout(() => {
+            showNotification('Willkommen! Wähle ein Level und höre dir zuerst alle Wörter an!');
+        }, 500);
+    </script>
+</body>
+</html>
